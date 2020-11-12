@@ -9,3 +9,4 @@ interface UserRepository : JpaRepository<User, Long>
 interface VoteRepository : JpaRepository<Vote, Long>
 interface CommentRepository : JpaRepository<Comment, Long>
 interface SubredditRepository : JpaRepository<Subreddit, Long>
+interface VerificationTokenRepository : JpaRepository<VerificationToken, Long>
