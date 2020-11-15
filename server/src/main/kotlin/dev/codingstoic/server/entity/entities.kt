@@ -1,9 +1,10 @@
 package dev.codingstoic.server.entity
 
-import javax.persistence.*
-import javax.validation.constraints.NotBlank
+import lombok.Builder
 import java.time.Instant
+import javax.persistence.*
 import javax.validation.constraints.Email
+import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotEmpty
 
 
@@ -46,7 +47,10 @@ class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
-    var userName: @NotBlank(message = "Community name is required") String? = null
+
+    @Column(unique = true)
+    @NotBlank(message = "Community name is required")
+    var userName: String? = null
     var email: @Email @NotBlank(message = "Community name is required") String? = null
     var password: @NotBlank(message = "Community name is required") String? = null
     var createdDate: Instant? = null
@@ -64,15 +68,38 @@ class User {
     }
 }
 
+@Builder
 @Entity
-class Subreddit(
-        @Id @GeneratedValue(strategy = GenerationType.IDENTITY) var id: Long,
-        @NotBlank(message = "Community name is required") var name: String,
-        @NotBlank(message = "Description is required") var description: String,
-        @OneToMany(fetch = FetchType.LAZY) var posts: List<Post>,
-        var createdDate: Instant,
-        @ManyToOne(fetch = FetchType.LAZY) var user: User,
-)
+class Subreddit {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long? = null
+    var name: @NotBlank(message = "Community name is required") String? = null
+    var description: @NotBlank(message = "Description is required") String? = null
+
+    @OneToMany(fetch = FetchType.LAZY)
+    var posts: List<Post>? = null
+    var createdDate: Instant? = null
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private var user: User? = null
+
+    constructor()
+    constructor(
+            id: Long?, name: @NotBlank(message = "Community name is required") String?,
+            description: @NotBlank(message = "Description is required") String?,
+            posts: List<Post>?, createdDate: Instant?, user: User?,
+    ) {
+        this.id = id
+        this.name = name
+        this.description = description
+        this.posts = posts
+        this.createdDate = createdDate
+        this.user = user
+    }
+
+}
 
 @Entity
 @Table(name = "token")
