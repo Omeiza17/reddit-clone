@@ -27,9 +27,12 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("javax.validation:validation-api:2.0.1.Final")
 	implementation("org.hibernate.validator:hibernate-validator:6.1.6.Final")
+	implementation("io.jsonwebtoken:jjwt-api:0.11.2")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("mysql:mysql-connector-java")
+	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.2")
+	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.2")
 	compileOnly("org.projectlombok:lombok")
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test") {

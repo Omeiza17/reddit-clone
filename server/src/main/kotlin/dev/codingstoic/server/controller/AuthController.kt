@@ -1,5 +1,7 @@
 package dev.codingstoic.server.controller
 
+import dev.codingstoic.server.dto.AuthenticationResponse
+import dev.codingstoic.server.dto.LoginRequest
 import dev.codingstoic.server.dto.RegisterRequest
 import dev.codingstoic.server.service.AuthService
 import org.springframework.http.HttpStatus
@@ -20,5 +22,10 @@ class AuthController(val authService: AuthService) {
     fun verifyAccount(@PathVariable token: String): ResponseEntity<String> {
         authService.verifyAccount(token = token)
         return ResponseEntity<String>("Account Activated Successfully", HttpStatus.OK)
+    }
+
+    @PostMapping(path = ["/login"])
+    fun login(@RequestBody loginRequest: LoginRequest): AuthenticationResponse {
+        return authService.login(loginRequest = loginRequest)
     }
 }
