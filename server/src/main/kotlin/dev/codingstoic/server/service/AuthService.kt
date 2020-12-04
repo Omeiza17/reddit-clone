@@ -14,20 +14,22 @@ import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
 import java.util.*
 
+
 @Service
 @Transactional
 class AuthService(
-        val passwordEncoder: PasswordEncoder, val userRepository: UserRepository,
-        val verificationTokenRepository: VerificationTokenRepository,
-        val mailService: MailService,
-        val authenticationManager: AuthenticationManager,
-        val jwtProvider: JwtProvider,
+    val passwordEncoder: PasswordEncoder, val userRepository: UserRepository,
+    val verificationTokenRepository: VerificationTokenRepository,
+    val mailService: MailService,
+    val authenticationManager: AuthenticationManager,
+    val jwtProvider: JwtProvider,
 ) {
     fun signup(registerRequest: RegisterRequest) {
         val user = User()
@@ -39,9 +41,13 @@ class AuthService(
         userRepository.save(user)
 
         val token = generateVerificationTokenToken(user)
-        mailService.sendMail(NotificationEmail("Thank you for Signing up to Reddit Clone. Please click on the " +
-                "following url to activate your account: http://localhost:8080/api/auth/accountVerification/$token",
-                "Please activate your account", user.email!!))
+        mailService.sendMail(
+            NotificationEmail(
+                "Thank you for Signing up to Reddit Clone. Please click on the " +
+                        "following url to activate your account: http://localhost:8080/api/auth/accountVerification/$token",
+                "Please activate your account", user.email!!
+            )
+        )
     }
 
     private fun generateVerificationTokenToken(user: User): String {
@@ -70,9 +76,22 @@ class AuthService(
     }
 
     fun login(loginRequest: LoginRequest): AuthenticationResponse {
-        val authenticate: Authentication = authenticationManager.authenticate(UsernamePasswordAuthenticationToken(loginRequest.username, loginRequest.password))
+        val authenticate: Authentication = authenticationManager.authenticate(
+            UsernamePasswordAuthenticationToken(
+                loginRequest.username,
+                loginRequest.password
+            )
+        )
         SecurityContextHolder.getContext().authentication = authenticate
         val token = jwtProvider.generateToken(authenticate)
         return AuthenticationResponse(authenticationToken = token!!, username = loginRequest.username)
+    }
+
+    @Transactional(readOnly = true)
+    fun getCurrentUser(): User? {
+        val principal =
+            SecurityContextHolder.getContext().authentication.principal as org.springframework.security.core.userdetails.User
+        return userRepository.findByUserName(principal.username)
+            .orElseThrow { UsernameNotFoundException("User name not found - ${principal.username}") }
     }
 }

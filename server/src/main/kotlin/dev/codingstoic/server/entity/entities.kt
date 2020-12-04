@@ -12,25 +12,34 @@ import javax.validation.constraints.NotEmpty
 class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private var id: Long? = null
-    private var postName: String? = null
-    private var url: String? = null
+    var id: Long? = null
+    var postName: String? = null
+    var url: String? = null
 
     @Lob
-    private var description: String? = null
-    private var voteCount: Int? = null
-    private var createdDate: Instant? = null
+    var description: String? = null
+    var voteCount: Int? = null
+    var createdDate: Instant? = null
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private var user: User? = null
+    var user: User? = null
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subreddit_id", referencedColumnName = "id")
-    private var subreddit: Subreddit? = null
+    var subreddit: Subreddit? = null
 
     constructor()
-    constructor(id: Long?, postName: String?, url: String?, description: String?, voteCount: Int?, createdDate: Instant?, user: User?, subreddit: Subreddit?) {
+    constructor(
+        id: Long?,
+        postName: String?,
+        url: String?,
+        description: String?,
+        voteCount: Int?,
+        createdDate: Instant?,
+        user: User?,
+        subreddit: Subreddit?
+    ) {
         this.id = id
         this.postName = postName
         this.url = url
@@ -57,8 +66,10 @@ class User {
     var isEnabled: Boolean? = null
 
     constructor()
-    constructor(id: Long?, userName: String?, email: String?, password: String?, createdDate: Instant?, isEnabled:
-    Boolean?) {
+    constructor(
+        id: Long?, userName: String?, email: String?, password: String?, createdDate: Instant?, isEnabled:
+        Boolean?
+    ) {
         this.id = id
         this.userName = userName
         this.email = email
@@ -87,9 +98,9 @@ class Subreddit {
 
     constructor()
     constructor(
-            id: Long?, name: @NotBlank(message = "Community name is required") String?,
-            description: @NotBlank(message = "Description is required") String?,
-            posts: List<Post>?, createdDate: Instant?, user: User?,
+        id: Long?, name: @NotBlank(message = "Community name is required") String?,
+        description: @NotBlank(message = "Description is required") String?,
+        posts: List<Post>?, createdDate: Instant?, user: User?,
     ) {
         this.id = id
         this.name = name
@@ -127,19 +138,19 @@ class VerificationToken {
 
 @Entity
 class Vote(
-        @Id @GeneratedValue(strategy = GenerationType.IDENTITY) var id: Long,
-        var voteType: VoteType,
-        @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "postId", referencedColumnName = "id") var post: Post,
-        @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "userId", referencedColumnName = "id") var user: User,
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) var id: Long,
+    var voteType: VoteType,
+    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "postId", referencedColumnName = "id") var post: Post,
+    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "userId", referencedColumnName = "id") var user: User,
 )
 
 @Entity
 class Comment(
-        @Id @GeneratedValue(strategy = GenerationType.IDENTITY) var id: Long,
-        @NotEmpty var text: String,
-        @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "postId", referencedColumnName = "id") var post: Post,
-        @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "userId", referencedColumnName = "id") var user: User,
-        var createdDate: Instant
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) var id: Long,
+    @NotEmpty var text: String,
+    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "postId", referencedColumnName = "id") var post: Post,
+    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "userId", referencedColumnName = "id") var user: User,
+    var createdDate: Instant
 )
 
 enum class VoteType(val direction: Int) {

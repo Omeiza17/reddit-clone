@@ -12,7 +12,10 @@ interface UserRepository : JpaRepository<User, Long> {
 
 interface VoteRepository : JpaRepository<Vote, Long>
 interface CommentRepository : JpaRepository<Comment, Long>
-interface SubredditRepository : JpaRepository<Subreddit, Long>
+interface SubredditRepository : JpaRepository<Subreddit, Long> {
+    fun findByName(name: String): Optional<Subreddit>
+}
+
 interface VerificationTokenRepository : JpaRepository<VerificationToken, Long> {
     fun findByToken(token: String): Optional<VerificationToken>
 }

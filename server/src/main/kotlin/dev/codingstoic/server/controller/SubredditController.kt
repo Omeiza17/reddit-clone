@@ -22,4 +22,9 @@ class SubredditController(val subredditService: SubredditService) {
     fun getAllSubreddits(): ResponseEntity<List<SubredditDto>> {
         return ResponseEntity.status(HttpStatus.OK).body(subredditService.getAllSubreddits())
     }
+
+    @GetMapping(path = ["/{id}"])
+    fun getSubreddit(@PathVariable id: Long): ResponseEntity<SubredditDto> {
+        return ResponseEntity.status(HttpStatus.OK).body(subredditService.getSubreddit(id))
+    }
 }
