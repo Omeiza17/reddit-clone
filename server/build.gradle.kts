@@ -31,6 +31,7 @@ dependencies {
 	implementation("io.jsonwebtoken:jjwt-api:0.11.2")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation("org.mapstruct:mapstruct-jdk8:1.4.1.Final")
+	implementation("com.github.marlonlom:timeago:4.0.1")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("mysql:mysql-connector-java")
 	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.2")

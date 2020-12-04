@@ -5,7 +5,11 @@ import org.springframework.data.jpa.repository.JpaRepository
 import java.util.*
 
 
-interface PostRepository : JpaRepository<Post, Long>
+interface PostRepository : JpaRepository<Post, Long> {
+    fun findAllBySubreddit(subreddit: Subreddit): List<Post>
+    fun findByUser(user: User): List<Post>
+}
+
 interface UserRepository : JpaRepository<User, Long> {
     fun findByUserName(userName: String): Optional<User>
 }
