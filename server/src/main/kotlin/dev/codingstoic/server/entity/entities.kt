@@ -58,10 +58,10 @@ class User {
     var id: Long? = null
 
     @Column(unique = true)
-    @NotBlank(message = "Community name is required")
+    @NotBlank(message = "username is required")
     var userName: String? = null
-    var email: @Email @NotBlank(message = "Community name is required") String? = null
-    var password: @NotBlank(message = "Community name is required") String? = null
+    var email: @Email @NotBlank(message = "username is required") String? = null
+    var password: @NotBlank(message = "username is required") String? = null
     var createdDate: Instant? = null
     var isEnabled: Boolean? = null
 
@@ -79,7 +79,6 @@ class User {
     }
 }
 
-@Builder
 @Entity
 class Subreddit {
     @Id
@@ -94,7 +93,7 @@ class Subreddit {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private var user: User? = null
+    var user: User? = null
 
     constructor()
     constructor(
@@ -110,6 +109,37 @@ class Subreddit {
         this.user = user
     }
 
+}
+
+@Entity
+class Comment {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long? = null
+
+    @NotEmpty
+    var text: String? = null
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "postId", referencedColumnName = "id")
+    var post: Post? = null
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userId", referencedColumnName = "id")
+    var user: User? = null
+    var createdDate: Instant? = null
+
+    constructor()
+    constructor(
+        id: Long?, text: @NotBlank(message = "Comment text is required") String?,
+        post: Post?, createdDate: Instant?, user: User?
+    ) {
+        this.id = id
+        this.text = text
+        this.post = post
+        this.user = user
+        this.createdDate = createdDate
+    }
 }
 
 @Entity
@@ -142,15 +172,6 @@ class Vote(
     var voteType: VoteType,
     @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "postId", referencedColumnName = "id") var post: Post,
     @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "userId", referencedColumnName = "id") var user: User,
-)
-
-@Entity
-class Comment(
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) var id: Long,
-    @NotEmpty var text: String,
-    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "postId", referencedColumnName = "id") var post: Post,
-    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "userId", referencedColumnName = "id") var user: User,
-    var createdDate: Instant
 )
 
 enum class VoteType(val direction: Int) {

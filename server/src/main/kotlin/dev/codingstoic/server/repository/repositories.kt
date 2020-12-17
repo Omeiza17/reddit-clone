@@ -15,7 +15,11 @@ interface UserRepository : JpaRepository<User, Long> {
 }
 
 interface VoteRepository : JpaRepository<Vote, Long>
-interface CommentRepository : JpaRepository<Comment, Long>
+interface CommentRepository : JpaRepository<Comment, Long> {
+    fun findAllByPost(post: Post): List<Comment>
+    fun findAllByUser(user: User): List<Comment>
+}
+
 interface SubredditRepository : JpaRepository<Subreddit, Long> {
     fun findByName(name: String): Optional<Subreddit>
 }
