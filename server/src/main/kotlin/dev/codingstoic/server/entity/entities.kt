@@ -6,6 +6,8 @@ import javax.persistence.*
 import javax.validation.constraints.Email
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotEmpty
+import dev.codingstoic.server.execption.SpringRedditException
+import java.util.*
 
 
 @Entity
@@ -162,18 +164,44 @@ class VerificationToken {
         this.expiryDate = expiryDate
     }
 
-
 }
 
 
 @Entity
-class Vote(
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) var id: Long,
-    var voteType: VoteType,
-    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "postId", referencedColumnName = "id") var post: Post,
-    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "userId", referencedColumnName = "id") var user: User,
-)
+class Vote {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long? = null
+    var voteType: VoteType? = null
 
-enum class VoteType(val direction: Int) {
-    DOWNVOTE(-1), UPVOTE(1),
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "postId", referencedColumnName = "id")
+    var post: Post? = null
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userId", referencedColumnName = "id")
+    var user: User? = null
+
+    constructor()
+    constructor(id: Long?, voteType: VoteType?, post: Post?, user: User?) {
+        this.id = id
+        this.voteType = voteType
+        this.post = post
+        this.user = user
+    }
+}
+
+enum class VoteType(direction: Int) {
+    UPVOTE(1), DOWNVOTE(-1);
+
+    val direction = 0
+
+    companion object {
+        fun lookup(direction: Int?): VoteType {
+            return Arrays.stream(values())
+                .filter { value -> value.direction == direction }
+                .findAny()
+                .orElseThrow { SpringRedditException("Vote not found") }
+        }
+    }
 }

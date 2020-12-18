@@ -6,9 +6,7 @@ import dev.codingstoic.server.dto.PostResponse
 import dev.codingstoic.server.entity.Post
 import dev.codingstoic.server.execption.PostNotFoundException
 import dev.codingstoic.server.execption.SubredditNotFoundException
-import dev.codingstoic.server.repository.PostRepository
-import dev.codingstoic.server.repository.SubredditRepository
-import dev.codingstoic.server.repository.UserRepository
+import dev.codingstoic.server.repository.*
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -20,7 +18,9 @@ class PostService(
     val postRepository: PostRepository,
     val subredditRepository: SubredditRepository,
     val authService: AuthService,
-    val userRepository: UserRepository
+    val userRepository: UserRepository,
+    val commentRepository: CommentRepository,
+    val voteRepository: VoteRepository,
 ) {
     fun save(postRequest: PostRequest) {
         postRepository.save(mapToPost(postRequest))
@@ -63,7 +63,7 @@ class PostService(
             postName = post.postName,
             voteCount = post.voteCount,
             duration = TimeAgo.using(post.createdDate!!.toEpochMilli()),
-            commentCount = 0,
+            commentCount = commentRepository.findAllByPost(post).size,
             downVote = false,
             upVote = false,
         )

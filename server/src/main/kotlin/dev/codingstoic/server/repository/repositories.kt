@@ -14,7 +14,10 @@ interface UserRepository : JpaRepository<User, Long> {
     fun findByUserName(userName: String): Optional<User>
 }
 
-interface VoteRepository : JpaRepository<Vote, Long>
+interface VoteRepository : JpaRepository<Vote, Long> {
+    fun findTopByPostAndUserOrderByVoteTypeDesc(post: Post, currentUser: User?): Optional<Vote>
+}
+
 interface CommentRepository : JpaRepository<Comment, Long> {
     fun findAllByPost(post: Post): List<Comment>
     fun findAllByUser(user: User): List<Comment>

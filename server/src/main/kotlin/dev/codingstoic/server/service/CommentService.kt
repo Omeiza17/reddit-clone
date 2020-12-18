@@ -12,6 +12,7 @@ import dev.codingstoic.server.repository.PostRepository
 import dev.codingstoic.server.repository.UserRepository
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
 import kotlin.streams.toList
 
@@ -26,6 +27,7 @@ class CommentService(
 ) {
     private val POST_URL = ""
 
+    @Transactional
     fun save(commentDto: CommentDto) {
         val post = postRepository.findById(commentDto.postId!!)
             .orElseThrow { return@orElseThrow PostNotFoundException(commentDto.postId.toString()) }
@@ -65,6 +67,7 @@ class CommentService(
         return comment
     }
 
+    @Transactional(readOnly = true)
     fun getAllCommentsForPost(postId: Long): List<CommentDto> {
         val post = postRepository.findById(postId)
             .orElseThrow { return@orElseThrow PostNotFoundException(postId.toString()) }
@@ -72,6 +75,7 @@ class CommentService(
             .stream().map { mapToDto(it) }.toList()
     }
 
+    @Transactional(readOnly = true)
     fun getAllCommentsForUser(userName: String): List<CommentDto> {
         val user = userRepository.findByUserName(userName)
             .orElseThrow { return@orElseThrow UsernameNotFoundException(userName) }
