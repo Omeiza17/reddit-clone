@@ -166,6 +166,22 @@ class VerificationToken {
 
 }
 
+@Entity
+class RefreshToken {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long? = null
+    var token: String? = null
+    var createdDate: Instant? = null
+
+    constructor()
+    constructor(id: Long?, token: String?, createdDate: Instant?) {
+        this.id = id
+        this.token = token
+        this.createdDate = createdDate
+    }
+}
+
 
 @Entity
 class Vote {

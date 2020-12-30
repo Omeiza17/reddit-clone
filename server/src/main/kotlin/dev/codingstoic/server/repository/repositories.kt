@@ -30,3 +30,8 @@ interface SubredditRepository : JpaRepository<Subreddit, Long> {
 interface VerificationTokenRepository : JpaRepository<VerificationToken, Long> {
     fun findByToken(token: String): Optional<VerificationToken>
 }
+
+interface RefreshTokenRepository : JpaRepository<RefreshToken, Long> {
+    fun findByToken(token: String): Optional<RefreshToken>
+    fun deleteByToken(token: String)
+}
